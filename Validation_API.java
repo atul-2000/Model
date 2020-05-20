@@ -9,9 +9,9 @@ public class trial {
         name=input.get(0);
         id=input.get(1);
         UUID uuid = UUID.randomUUID();
-		    System.out.println("Validation API called with parameters name:"+name+","+ " seller I'd:"+id);
-		    System.out.println("Unique token associated with this query:"+uuid);
-	      return uuid;
+        System.out.println("Validation API called with parameters name:"+name+","+ " seller I'd:"+id);
+        System.out.println("Unique token associated with this query:"+uuid);
+	return uuid;
 	  } 
 
 	}
