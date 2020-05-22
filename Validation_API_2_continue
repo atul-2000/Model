@@ -1,0 +1,23 @@
+package validation_ap;
+
+import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
+import org.json.JSONObject;
+import org.json.JSONException;
+public class check_input {
+	public String handleRequest(String input) throws JSONException {
+		JSONObject jason = new JSONObject(input);
+        String name=null,id=null;
+        name=(String)jason.get("name");
+        id=(String)jason.get("seller id");
+        UUID uuid = UUID.randomUUID();
+        System.out.println(name);
+        System.out.println(id);
+        
+        return uuid.toString();
+	} 
+	   public static void main(String[] args) {
+		   
+	   }
+}
