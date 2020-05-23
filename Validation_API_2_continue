@@ -1,10 +1,23 @@
 package validation_ap;
 
 import java.util.UUID;
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;
+//import java.util.List;
+import java.net.URL;
+import java.net.MalformedURLException;
 import org.json.JSONObject;
 import org.json.JSONException;
+//import com.amazonaws.services.lambda.runtime.Context;
+//import com.amazonaws.services.lambda.runtime.RequestHandler;
+//import com.amazonaws.services.lambda.runtime.events.SQSEvent;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.*;
+//import com.amazonaws.services.sqs.model.AmazonSQSException;
+//import com.amazonaws.services.lambda.runtime.events.SQSEvent.SQSMessage;
+//import com.amazonaws.AmazonClientException;
+//import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+
 public class check_input {
 	public String handleRequest(String input) throws JSONException {
 		JSONObject jason = new JSONObject(input);
@@ -15,9 +28,33 @@ public class check_input {
         System.out.println(name);
         System.out.println(id);
         
+     // Send a message
+        //URL myQueueUrl = null;
+        final AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
+        System.out.println("Sending a message to MyFifoQueue.fifo.\n");
+        URL myQueueUrl=null;
+		try {
+			myQueueUrl = new URL("https://sqs.us-east-1.amazonaws.com/537655468469/input.fifo");
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        String U = myQueueUrl.toString();
+        final SendMessageRequest sendMessageRequest = new SendMessageRequest(U, name);
+
+        // When you send messages to a FIFO queue, you must provide a non-empty MessageGroupId.
+        sendMessageRequest.setMessageGroupId("messageGroup1");
+
+        // Uncomment the following to provide the MessageDeduplicationId
+        sendMessageRequest.setMessageDeduplicationId("1");
+        final SendMessageResult sendMessageResult = sqs.sendMessage(sendMessageRequest);
+        final String sequenceNumber =  sendMessageResult.getSequenceNumber();
+        final String messageId = sendMessageResult.getMessageId();
+        System.out.println("SendMessage succeed with messageId "+ messageId + ", sequence number " + sequenceNumber + "\n");
         return uuid.toString();
 	} 
 	   public static void main(String[] args) {
 		   
 	   }
 }
+
