@@ -1,1 +1,11 @@
-
+public String handleRequest(String input) throws JSONException {
+		String name=null,id=null;
+		JSONObject jason = string_to_json(input);
+        name=(String)jason.get("name");
+        id=(String)jason.get("seller id");
+        UUID uuid = unique_token_generator();
+        System.out.println(name);
+        System.out.println(id);
+        send_query_to_SQS(input);
+        return uuid.toString();
+	} 
