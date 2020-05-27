@@ -1,0 +1,7 @@
+public JSONObject string_to_json(String input) throws JSONException{
+		JSONObject jason = new JSONObject(input);
+		return jason;
+	}
+	public UUID unique_token_generator() {
+		return UUID.randomUUID();
+	}
