@@ -11,7 +11,7 @@ class fuzzy_match_utility {
 			return z; 
 	} 
 
-	static boolean editDistDP(String str1, String str2, int m, int n) // m is length of str1 & n is length of str2
+	static boolean name_match(String str1, String str2, int m, int n) // m is length of str1 & n is length of str2
 	{ 
 		// Create a table to store results of subproblems 
 		int dp[][] = new int[m + 1][n + 1]; 
