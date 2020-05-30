@@ -44,7 +44,7 @@ class fuzzy_match_utility {
 		} 
 
 		int no_of_edits = dp[m][n]; 
-    int ans = int((no_of_edits/str1.length())*100)
+    int ans =(int) ((no_of_edits*100)/str1.length());
     if(ans>84){
        return true;
     }
