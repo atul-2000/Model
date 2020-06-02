@@ -1,0 +1,46 @@
+package validation_ap;
+
+import java.util.UUID;
+
+import java.net.URL;
+import java.net.MalformedURLException;
+import org.json.JSONObject;
+import org.json.JSONException;
+
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.*;
+
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+public class Accessor {
+	public int send_query_to_SQS(String input) {
+		final AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
+        System.out.println("Sending a message to MyFifoQueue.fifo.\n");
+        URL myQueueUrl=null;
+		try {
+			myQueueUrl = new URL("https://sqs.us-east-1.amazonaws.com/537655468469/input.fifo");
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 0;
+		}
+		try {
+			String U = myQueueUrl.toString();
+	        final SendMessageRequest sendMessageRequest = new SendMessageRequest(U, input);
+
+	        // When you send messages to a FIFO queue, you must provide a non-empty MessageGroupId.
+	        sendMessageRequest.setMessageGroupId("messageGroup1");
+
+	        // Uncomment the following to provide the MessageDeduplicationId
+	        sendMessageRequest.setMessageDeduplicationId("1");
+	        final SendMessageResult sendMessageResult = sqs.sendMessage(sendMessageRequest);
+	        final String sequenceNumber =  sendMessageResult.getSequenceNumber();
+	        final String messageId = sendMessageResult.getMessageId();
+	        System.out.println("SendMessage succeed with messageId "+ messageId + ", sequence number " + sequenceNumber + "\n");
+		} catch(Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+        return 1;
+	}
+
+}
