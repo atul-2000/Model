@@ -1,0 +1,60 @@
+package validation_ap;
+
+import java.util.UUID;
+import java.net.URL;
+import java.net.MalformedURLException;
+import org.json.JSONObject;
+import org.json.JSONException;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.*;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import validation_ap.Consumer;
+import validation_ap.Utility;
+import validation_ap.Accessor;
+import validation_ap.Processor;
+public class check_input {
+	public String handleRequest(String input) throws JSONException {
+		String name=null,id=null;
+		Utility jason1 = new Utility();
+	    JSONObject jason = jason1.string_to_json(input);
+        name=(String)jason.get("name");
+        id=(String)jason.get("seller id");
+        Consumer consume = new Consumer();
+        int validating_input_number = consume.validating_input(input);
+        if(validating_input_number == 1) {
+        	JSONObject error_message = new JSONObject();
+        	error_message.put("Status", "Failed");
+        	error_message.put("Reason", "Name given by you is invalid");
+        	return error_message.toString();
+        }
+        if(validating_input_number == 2) {
+        	JSONObject error_message = new JSONObject();
+        	error_message.put("Status", "Failed");
+        	error_message.put("Reason", "Seller Id given by you is invalid");
+        	return error_message.toString();
+        }
+        if(validating_input_number == 12) {
+        	JSONObject error_message = new JSONObject();
+        	error_message.put("Status", "Failed");
+        	error_message.put("Reason", "Both Name and Seller Id given by you are invalid");
+        	return error_message.toString();
+        }
+        
+        Accessor sqs_access = new Accessor();
+    	int status_of_message_sent = sqs_access.send_query_to_SQS(input);
+    	if(status_of_message_sent == 0) {
+    		JSONObject error_message = new JSONObject();
+        	error_message.put("Status", "Failed");
+        	error_message.put("Reason", "Validation module is not available");
+        	return error_message.toString();
+    	}
+    	
+    	Processor process = new Processor();
+    	UUID uuid = process.unique_token_generator();
+    	JSONObject success_message = new JSONObject();
+    	success_message.put("Status", "Success");
+    	success_message.put("Unique token", uuid.toString());
+    	return success_message.toString();
+    	
+	}
+}
