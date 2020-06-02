@@ -1,0 +1,28 @@
+package s3;
+
+import java.io.File;  // Import the File class
+//import java.io.FileWriter;
+import java.io.IOException;  // Import the IOException class to handle errors
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.AmazonServiceException;
+
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+public class object_write {
+	public void object_upload() throws IOException{
+
+		String bucketName = "switch-check";
+        String key = "test.txt";
+        String write = "123456789";
+        final AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
+        
+        try {
+        	s3.putObject(bucketName, key, write);
+        }catch(AmazonServiceException e) {
+        	System.err.println(e.getErrorMessage());
+        	System.exit(1);
+        	
+        }
+	}
+}
+
