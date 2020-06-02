@@ -1,11 +1,64 @@
-public String handleRequest(String input) throws JSONException {
+package validation_ap;
+
+import java.util.UUID;
+
+import java.net.URL;
+import java.net.MalformedURLException;
+import org.json.JSONObject;
+import org.json.JSONException;
+
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.*;
+
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import validation_ap.Utility;
+public class Consumer {
+	public int validating_input(String input) throws JSONException {
 		String name=null,id=null;
-		JSONObject jason = string_to_json(input);
+		Utility jason1 = new Utility();
+	    JSONObject jason = jason1.string_to_json(input);
         name=(String)jason.get("name");
         id=(String)jason.get("seller id");
-        UUID uuid = unique_token_generator();
         System.out.println(name);
         System.out.println(id);
-        send_query_to_SQS(input);
-        return uuid.toString();
+        boolean name_check = is_Valid_Name(name);
+        boolean id_check = is_Valid_Id(id);
+        if(name_check==false && id_check==true)
+        	return 1;
+        if(id_check==false && name_check==true)
+        	return 2;
+        if(name_check==false && id_check==false)
+        	return 12;
+        
+        return 3;
 	} 
+	
+	public boolean is_Valid_Name(String str) 
+	{ 
+		if (str == null || str.equals("")||str.length()>200) { 
+			return false; 
+		} 
+		for (int i = 0; i < str.length(); i++) { 
+			char ch = str.charAt(i); 
+			if ((!(ch >= 'A' && ch <= 'Z')) && (!(ch >= 'a' && ch <= 'z'))&&(ch != ' ')) { 
+				return false; 
+			} 
+		} 
+		return true; 
+	} 
+
+	public boolean is_Valid_Id(String str)
+	{
+		if (str == null || str.length() != 10) { 
+			return false; 
+		} 
+		for (int i = 0; i < str.length(); i++) { 
+			char ch = str.charAt(i); 
+			if ((!(ch >= '0' && ch <= '9'))) { 
+				return false; 
+			} 
+		}
+		return true;
+	}
+
+}
