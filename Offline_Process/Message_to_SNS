@@ -1,0 +1,23 @@
+package s3;
+import java.util.UUID;
+import org.json.JSONObject;
+import org.json.JSONException;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.model.*;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+
+public class SNS {
+	public void request(String response) {
+		// Publish a message to an Amazon SNS topic.
+		final AmazonSNS sns= AmazonSNSClientBuilder.defaultClient();
+		final String arn = "arn:aws:sns:us-east-1:537655468469:test1_sqs";
+		final String msg = response;
+		final PublishRequest publishRequest = new PublishRequest(arn, msg);
+		final PublishResult publishResponse = sns.publish(publishRequest);
+
+		// Print the MessageId of the message.
+		System.out.println("Posting response & MessageId: " + publishResponse.getMessageId());
+		
+		}
+
+}
