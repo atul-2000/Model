@@ -1,0 +1,68 @@
+package s3;
+
+import java.util.UUID;
+import java.util.List;
+import java.net.URL;
+import java.net.MalformedURLException;
+import org.json.JSONObject;
+import org.json.JSONException;
+
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.*;
+
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+
+public class Accessor {
+	List<Message> messages;
+	public String receive_messages_from_sqs() {
+		 // Receive messages.
+		final AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
+		URL myQueueUrl=null;
+		try {
+			myQueueUrl = new URL("https://sqs.us-east-1.amazonaws.com/537655468469/input_1.fifo");
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String U = myQueueUrl.toString();
+		String input=null;
+       System.out.println("Receiving messages from MyFifoQueue.fifo.\n");
+       final ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(U);
+
+       // Uncomment the following to provide the ReceiveRequestDeduplicationId
+       //receiveMessageRequest.setReceiveRequestAttemptId("1");
+       messages = sqs.receiveMessage(receiveMessageRequest)
+               .getMessages();
+       for (final Message message : messages) {
+           System.out.println("Message");
+           System.out.println("  MessageId:     " + message.getMessageId());
+           System.out.println("  ReceiptHandle: " + message.getReceiptHandle());
+           System.out.println("  MD5OfBody:     " + message.getMD5OfBody());
+           System.out.println("  Body:          " + message.getBody());
+           input= message.getBody();
+          
+       }
+       System.out.println();
+       //List<String> value = null;
+       //String messageReceiptHandle = messages.get(0).getReceiptHandle();
+       //value.add(0,input);
+       //value.add(1,messageReceiptHandle);
+       return input;
+	}
+	
+	public void delete_message_from_sqs() {
+		URL myQueueUrl=null;
+		try {
+			myQueueUrl = new URL("https://sqs.us-east-1.amazonaws.com/537655468469/input_1.fifo");
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String U = myQueueUrl.toString();
+		final AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
+		System.out.println("Deleting the message.\n");
+	       final String messageReceiptHandle = messages.get(0).getReceiptHandle();
+	       sqs.deleteMessage(new DeleteMessageRequest(U, messageReceiptHandle));
+	}
+
+}
