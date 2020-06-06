@@ -1,0 +1,22 @@
+package s3;
+import java.util.Random;
+public class Govt_API {
+	public String api(String id) {
+		String error = "error";
+		int rand_int = random_number();
+		if(rand_int<=7) {
+			return "atul";
+		}
+		return error;
+	}
+	
+	public int random_number() {
+		Random rand = new Random(); 
+        // Generate random integers in range 0 to 9 
+        int rand_int = rand.nextInt(10);  
+        // Print random integers 
+        System.out.println("Random Integers: "+rand_int);
+        return rand_int;
+	}
+
+}
